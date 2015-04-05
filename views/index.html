@@ -1,0 +1,147 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Shuffler - Collaborative Party Playlists!</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all">
+<link href="css/style.css" rel="stylesheet" type="text/css" media="all" />
+<link rel="stylesheet" href="css/bar-ui.css" />
+<link href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="css/flexslider.css" type="text/css" media="screen" />
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery.lazyload.js"></script>
+<script src="http://cdn.socket.io/socket.io-1.3.4.js"></script>
+<script src="http://connect.soundcloud.com/sdk-2.0.0.js"></script>
+<script type="text/javascript" src="https://www.youtube.com/iframe_api"></script>
+<script type="text/javascript" src="js/jquery.touchSwipe.min.js"></script>
+<script src="js/jquery.cookie.js"></script>
+<script>
+  SC.initialize({
+  client_id: 'fe3499d30ef5189f05bfd2c214de4dcd'
+});
+</script>
+</head>
+<body>
+<!-- header -->
+			<!-- player #2 -->
+<div class="sm2-bar-ui">
+
+ <div class="bd sm2-main-controls">
+
+  <div class="sm2-inline-texture"></div>
+  <div class="sm2-inline-gradient"></div>
+
+  <div class="sm2-inline-element sm2-button-element">
+   <div class="sm2-button-bd">
+    <a id="playbtn" class="sm2-inline-button play-pause">Play / pause</a>
+   </div>
+  </div>
+
+  <div class="sm2-inline-element sm2-inline-status">
+
+   <div class="sm2-playlist">
+    <div class="sm2-playlist-target">
+    </div>
+   </div>
+
+   <div class="sm2-progress">
+    <div class="sm2-row">
+    <div class="sm2-inline-time">0:00</div>
+     <div class="sm2-progress-bd">
+      <div class="sm2-progress-track">
+       <div class="sm2-progress-bar"></div>
+       <div class="sm2-progress-ball"><div class="icon-overlay"></div></div>
+      </div>
+     </div>
+     <div class="sm2-inline-duration">0:00</div>
+    </div>
+   </div>
+
+  </div>
+
+  <div class="sm2-inline-element sm2-button-element">
+   <div class="sm2-button-bd">
+    <a title="Next" class="sm2-inline-button next">&gt; next</a>
+   </div>
+  </div>
+
+  <div class="sm2-inline-element sm2-button-element sm2-menu">
+   <div class="sm2-button-bd">
+     <a class="sm2-inline-button menu">menu</a>
+   </div>
+  </div>
+
+ </div>
+
+ <div class="bd sm2-playlist-drawer sm2-element">
+
+  <div class="sm2-inline-texture">
+   <div class="sm2-box-shadow"></div>
+  </div>
+
+  <!-- playlist content is mirrored here -->
+
+
+  <div class="sm2-extra-controls">
+
+   <div class="bd">
+
+    <div class="sm2-inline-element sm2-button-element">
+     <a href="#prev" title="Previous" class="sm2-inline-button previous">&lt; previous</a>
+    </div>
+
+    <div class="sm2-inline-element sm2-button-element">
+     <a href="#next" title="Next" class="sm2-inline-button next">&gt; next</a>
+    </div>
+
+    <!-- unimplemented -->
+    <!--
+    <div class="sm2-inline-element sm2-button-element disabled">
+     <a href="#repeat" title="Repeat playlist" class="sm2-inline-button repeat">&infin; repeat</a>
+    </div>
+
+    <div class="sm2-inline-element sm2-button-element disabled">
+     <a href="#shuffle" title="Shuffle" class="sm2-inline-button shuffle">shuffle</a>
+    </div>
+    -->
+
+   </div>
+
+  </div>
+
+ </div></div>
+	<div class="header">
+  	    <div class="container">					
+			<div class="logo">
+				<a class="clickable" href="home"><img ondragstart="return false;" src="images/logo.png" class="img-responsive" alt="" /></a>
+			</div>
+			<div class="hader-top">
+				<div class="head-nav">
+					
+				</div>
+				<div class="clearfix"> </div>
+			</div> 
+				<div class="clearfix"> </div>
+		</div> 
+	</div> 
+
+<!-- header -->
+<div id="content">
+	<div class="buttons">
+				<p><a class="clickable" href="join">JOIN A SESSION</a></p>
+	</div>
+	<p id="or">- OR -</p>
+	<div class="buttons">
+				<p><a class="clickable" href="host">HOST A SESSION</a></p>
+	</div>
+</div>
+<div id="player"></div>
+<footer>
+	<div id="footertabs"><div class="footertab" id="tab1">SEARCH</div><div class="footertab" id="tab2">QUEUE</div><div class="footertab" id="tab3">HISTORY</div></div>
+</footer>
+<div style="display:none;" id='reconnect'>
+</div>
+</body>
+<script src="js/scripts.js"></script>
+</html>
