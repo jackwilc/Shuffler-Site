@@ -16,6 +16,7 @@
 <script type="text/javascript" src="https://www.youtube.com/iframe_api"></script>
 <script type="text/javascript" src="js/jquery.touchSwipe.min.js"></script>
 <script src="js/jquery.cookie.js"></script>
+<script src="js/jquery.sliderTabs.min.js"></script>
 <script>
   SC.initialize({
   client_id: 'fe3499d30ef5189f05bfd2c214de4dcd'
@@ -95,17 +96,6 @@
      <a href="#next" title="Next" class="sm2-inline-button next">&gt; next</a>
     </div>
 
-    <!-- unimplemented -->
-    <!--
-    <div class="sm2-inline-element sm2-button-element disabled">
-     <a href="#repeat" title="Repeat playlist" class="sm2-inline-button repeat">&infin; repeat</a>
-    </div>
-
-    <div class="sm2-inline-element sm2-button-element disabled">
-     <a href="#shuffle" title="Shuffle" class="sm2-inline-button shuffle">shuffle</a>
-    </div>
-    -->
-
    </div>
 
   </div>
@@ -128,18 +118,90 @@
 
 <!-- header -->
 <div id="content">
+<div id="mainpage">
 	<div class="buttons">
-				<p><a class="clickable" href="join">JOIN A SESSION</a></p>
+				<p><a id="joinbtn" class="clickable">JOIN A SESSION</a></p>
 	</div>
 	<p id="or">- OR -</p>
 	<div class="buttons">
-				<p><a class="clickable" href="host">HOST A SESSION</a></p>
+				<p><a id="hostbtn" class="clickable">HOST A SESSION</a></p>
 	</div>
 </div>
+<div id="hostsession" style="display: none;">
+  <div class="register">
+      <div class="notice">
+      <p>Session data is retained for a period of a week.</p>
+      <p>Hosting sessions is not reccomended for lower performance devices.</p> 
+      </div>
+          <form>
+          <div class='error'>Session name has already been used within the past week!</div>
+         <div class="register-top-grid">
+           <div class="wow fadeInLeft" data-wow-delay="0.4s">
+            <span>Session Name<label>*</label></span>
+            <input id="sname" type="text"> 
+           </div>
+           <div class="clearfix"> </div>
+             <label class="checkbox"><input id="pwdcheck" type="checkbox" name="checkbox"><i> </i>Protect session with password?</label>
+             <hr />
+             <div id="passwordfield" class="wow fadeInLeft" data-wow-delay="0.4s">
+            <span>Session Password<label>*</label></span>
+            <input id="pwd" type="text"> 
+           </div>
+           </div>
+        </form>
+        <div class="clearfix"> </div>
+        <div class="submitbutton">
+        <p id="createbtn">CREATE SESSION</p>
+        </div>
+        <div class="buttons">
+        <p><a class="clickable" id="createback">BACK</a></p>
+        </div>
+    </div>
+</div>
+<div id="joinsession" style="display: none;">
+  <div class="register">
+          <form> 
+            <div class='error'>Session not found!</div>
+         <div class="register-top-grid">
+           <div class="wow fadeInLeft" data-wow-delay="0.4s">
+            <span>Session Name<label>*</label></span>
+            <input id='joinsname' type="text"> 
+           </div>
+           <div class="clearfix"> </div>
+           </div>
+        </form>
+        <div class="clearfix"> </div>
+        <div class="buttons">
+        <p><a id='joinbtn2' href="#">JOIN SESSION</a></p>
+        </div>
+        <div class="buttons">
+        <p><a id="joinback">BACK</a></p>
+        </div>
+    </div>
+</div>
+<div id="sessionpassword" style="display: none;">
+  <div class="register">
+          <form> 
+            <div class='error'>Passcode not correct</div>
+         <div class="register-top-grid">
+           <div class="wow fadeInLeft" data-wow-delay="0.4s">
+            <span>Session Password<label>*</label></span>
+            <input id='password' type="text"> 
+           </div>
+           <div class="clearfix"> </div>
+           </div>
+        </form>
+        <div class="clearfix"> </div>
+        <div class="buttons">
+        <p><a id='passwordbtn' href="#">JOIN SESSION</a></p>
+        </div>
+        <div class="buttons">
+        <p><a id="joinback">BACK</a></p>
+        </div>
+    </div>
+</div>
+</div>
 <div id="player"></div>
-<footer>
-	<div id="footertabs"><div class="footertab" id="tab1">SEARCH</div><div class="footertab" id="tab2">QUEUE</div><div class="footertab" id="tab3">HISTORY</div></div>
-</footer>
 <div style="display:none;" id='reconnect'>
 </div>
 </body>

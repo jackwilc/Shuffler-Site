@@ -97,6 +97,18 @@ socket.on('add_track',function(data){
 
 socket.on('vote',function(data){
 
+    var room = map.get(socket.id);
+
+    if(data.up){
+    connection.query('UPDATE tracks SET rating = rating + 1 WHERE id = ' + data.id + ' AND session_id = ' + room.id, function(err, rows, fields) {
+
+    });
+} else{
+    connection.query('UPDATE tracks SET rating = rating - 1 WHERE id = ' + data.id + ' AND session_id = ' + room.id, function(err, rows, fields) {
+
+    });
+}
+
 
 });
 
@@ -104,7 +116,7 @@ socket.on('request_next',function(data){
 
     var room = map.get(socket.id);
 
-    connection.query('SELECT * FROM tracks WHERE status = 0 AND session_id = ' + room.id, function(err, rows, fields) {
+    connection.query('SELECT * FROM tracks WHERE status = 0 AND session_id = ' + room.id + ' ORDER BY rating DESC, added', function(err, rows, fields) {
     
     if(rows.length == 0){
 
@@ -203,11 +215,21 @@ socket.on('join_session',function(data){
 
     }else{
         
+        if(rows[0].protected == 1){
+
+            socket.emit('password');
+
+        }
+        else
+        {
+
         var room = {name: connection.escape(sessionname).toLowerCase(), id: rows[0].id};
         console.log('Added to room:' + connection.escape(sessionname).toLowerCase());
         socket.join(connection.escape(sessionname).toLowerCase());
         map.set(socket.id, room);
         socket.emit('join_succeeded');
+        
+    }
 
     }
 
@@ -256,7 +278,7 @@ socket.on('update_id',function(data){
 
 setInterval(function(){
 
-connection.query('DELETE FROM session WHERE created < (NOW() - INTERVAL 10 MINUTE)');
+connection.query('DELETE FROM session WHERE created < (NOW() - INTERVAL 30 MINUTE)');
 console.log('Deleting old sessions...');
 
 }, 6000000);

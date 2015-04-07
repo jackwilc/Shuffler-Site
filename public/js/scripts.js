@@ -2,22 +2,30 @@ document.oncontextmenu =new Function("return false;")
 var $container = $('#content');
 var $loading = $('.head-nav');
 var duplicate = false;
-var socket = io.connect("http://192.168.1.5/");
+var socket = io.connect("http://192.168.1.9/");
 var ytplayer;
 var oldsocket;
 
 function escapeHtml(html)
-{
+  {
     var text = document.createTextNode(html);
     var div = document.createElement('div');
     div.appendChild(text);
     return div.innerHTML;
-}
+  }
 
 socket.on('connect', function(data){
   console.log('connect!');
   oldsocket = socket.id;
   $("#reconnect").hide();
+});
+
+socket.on('password', function(data){
+  $(".error").hide();
+    $("#joinsession").fadeOut('fast', function()
+            {
+              $('#sessionpassword').fadeIn();
+            });
 });
 
 socket.on('create_succeeded', function(data){
@@ -38,6 +46,7 @@ socket.on('create_succeeded', function(data){
   });
 
 
+
       });
     
 });
@@ -47,7 +56,7 @@ socket.on('sync_queue', function(data){
   console.log(data.rows);
 
   data.rows.forEach(function(track) {
-    $("#queuelist").append('<li id="' + track.id + 'queue" track-source="sc" track-id="" class="searchli queueitem"><img ondragstart="return false;" class="searchthumbnail" src="' + track.artwork + '"  width="60" height="60"><div class="searchtext"><p class="tracktitle">' + track.title + '</p><p class="trackuser">' + track.artist + '</p></div><div class="searchoption"></div></li>');
+    $("#queuelist").append('<li id="' + track.id + 'queue" track-source="sc" track-id="" class="searchli queueitem"><img ondragstart="return false;" class="searchthumbnail" src="' + track.artwork + '"  width="60" height="60"><div class="searchtext"><p class="tracktitle">' + track.title + '</p><p class="trackuser">' + track.artist + '</p></div><div class="searchoption"></div></li>');  
   });
      
 });
@@ -109,18 +118,30 @@ socket.on('create_failed', function(data){
 
 socket.on('queue_add', function(data){
     console.log(data);
-    $("#queuelist").append('<li id="' + data.track_id + 'queue" track-source="sc" track-id="" class="searchli queueitem"><img ondragstart="return false;" class="searchthumbnail" src="' + data.track_art + '"  width="60" height="60"><div class="searchtext"><p class="tracktitle">' + data.track_name + '</p><p class="trackuser">' + data.track_artist + '</p></div><div class="searchoption"></div></li>').fadeIn();
+    $("#queuelist").append('<li id="' + data.track_id + 'queue" track-source="sc" track-id="" class="searchli queueitem"><img ondragstart="return false;" class="searchthumbnail" src="' + data.track_art + '"  width="60" height="60"><div class="searchtext"><p class="tracktitle">' + data.track_name + '</p><p class="trackuser">' + data.track_artist + '</p></div></li>').fadeIn();
     $("#" + data.track_id + "queue").swipe( {
         swipe:function(event, direction, distance, duration, fingerCount, fingerData) {
+
           if(direction == 'left'){
+
+            if($.cookie(data.track_id.toString()) === undefined){
+              $(this).css("background-color","#AAFB97");
+              socket.emit('vote',{up: true, id: data.track_id});
+              $.cookie(data.track_id.toString(), 'up', { expires: 7 });
+            }
 
           }
 
           if(direction == 'right'){
 
+            if($.cookie(data.track_id.toString()) === undefined){
+              $(this).css("background-color","#FFA7A6");
+              socket.emit('vote',{up: false, id: data.track_id});
+              $.cookie(data.track_id.toString(), 'down', { expires: 7 });
+            }
 
           }
-          alert("You swiped " + direction );  
+          
         }
       });
 });
@@ -131,6 +152,81 @@ socket.on('history_add', function(data){
       data.track.permalink = 'https://www.youtube.com/watch?v=' + data.track.source_id;
     }
     $("#historylist").append('<a href="' + data.track.permalink + '" target="_blank"><li id="' + data.track.id + 'queue" track-source="sc" track-id="" class="searchli"><img ondragstart="return false;" class="searchthumbnail" src="' + data.track.artwork + '"  width="60" height="60"><div class="searchtext"><p class="tracktitle">' + data.track.title + '</p><p class="trackuser">' + data.track.artist + '</p></div><div class="searchoption"><img ondragstart="return false;" id="icon" class="soption" height="20" width="20" src="images/arrow.gif"></img></div></li></a>').fadeIn();
+});
+
+$('#hostbtn').click(function()
+  { 
+    $(".error").hide();
+    $("#mainpage").fadeOut('fast', function()
+            {
+              $('#hostsession').fadeIn();
+            });
+    
+});
+
+$('#joinbtn').click(function()
+  { 
+    $(".error").hide();
+    $("#mainpage").fadeOut('fast', function()
+            {
+              $('#joinsession').fadeIn();
+            });
+    
+});
+
+$('#createbtn').click(function()
+  {       
+
+        var name = $("#sname").val();
+        var pwd = $("#pwd").val();
+        var pwdcheck = $("#pwdcheck").prop( "checked" );
+
+        socket.emit('create_session',{sessionname: name, pwdcheck: pwdcheck, pwd: pwd});
+
+      
+        return false;
+
+});
+
+$('#createback').click(function()
+  {       
+
+        $("#hostsession").fadeOut('fast', function()
+            {
+              $('#mainpage').fadeIn();
+            });
+
+});
+
+$('#joinback').click(function()
+  {       
+
+        $("#joinsession").fadeOut('fast', function()
+            {
+              $('#mainpage').fadeIn();
+            });
+
+});
+
+$('#joinbtn2').click(function()
+  {       
+
+        var name = $("#joinsname").val();
+
+        socket.emit('join_session',{sessionname: name});
+
+        return false;
+
+});
+
+$('.checkbox').click(function()
+{
+    if(!duplicate){
+    $("#passwordfield").slideToggle( "slow" );
+    duplicate = true;
+} else{
+    duplicate = false;
+}
 });
 
 function registerclick(){
@@ -161,38 +257,6 @@ $('a.clickable').click(function()
         return false;
 });
 
-$('#createbtn').click(function()
-  {       
-
-        var name = $("#sname").val();
-        var pwd = $("#pwd").val();
-        var pwdcheck = $("#pwdcheck").prop( "checked" );
-
-        socket.emit('create_session',{sessionname: name, pwdcheck: pwdcheck, pwd: pwd});
-
-      
-        return false;
-
-});
-
-$('#joinbtn').click(function()
-  {       
-
-        var name = $("#sname").val();
-
-        socket.emit('join_session',{sessionname: name});
-
-        return false;
-
-});
-
-
-  $('#search').keydown(function(event){
-    if(event.keyCode == 13) {
-      event.preventDefault();
-      return false;
-    }
-  });
 
 function searchli(){
 $('.searchli').click(function()
@@ -340,23 +404,14 @@ $('#tab1').click(function()
   });
 
 
-$('.checkbox').click(function()
-{
-    if(!duplicate){
-    $("#passwordfield").slideToggle( "slow" );
-    duplicate = true;
-} else{
-    duplicate = false;
-}
-});
+
 
 }
 
-registerclick();
 
 
 socket.on("disconnect", function(){
-        socket = io.connect("http://192.168.1.116/");
+        socket = io.connect("http://192.168.1.9");
 
         socket.emit('update_id', {'oldid': oldsocket});
         oldsocket = socket.id;
@@ -367,8 +422,8 @@ socket.on("disconnect", function(){
 });
 
 
+//Youtube setup
 var tag = document.createElement('script');
-
 tag.src = "https://www.youtube.com/iframe_api";
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
